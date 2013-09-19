@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GeoTest</string>
+    <string name="please_wait">Please wait...</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+</resources>
