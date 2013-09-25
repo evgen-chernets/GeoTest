@@ -8,7 +8,6 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/tabHost"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true">
         <LinearLayout
                 android:layout_width="fill_parent"
@@ -24,41 +23,55 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent">
                 <LinearLayout
-                        android:id="@+id/tab1"
+                        android:id="@+id/tab_from"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent" android:orientation="vertical">
                     <EditText
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/from"
-                            android:id="@+id/tab1_editText"
-                            android:layout_gravity="top"/>
+                            android:id="@+id/editText_from"
+                            android:layout_gravity="top"
+                            android:maxLines="1"/>
                     <ListView
                             android:layout_width="fill_parent"
                             android:layout_height="150dp"
-                            android:id="@+id/tab1_listView"/>
+                            android:id="@+id/listView_from"/>
                     <fragment
-                            class="com.google.android.gms.maps.SupportMapFragment"
+                            android:name="com.google.android.gms.maps.SupportMapFragment"
+                            android:id="@+id/map_from"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"/>
                 </LinearLayout>
                 <LinearLayout
-                        android:id="@+id/tab2"
+                        android:id="@+id/tab_to"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent" android:orientation="vertical">
                     <EditText
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/to"
-                            android:id="@+id/tab2_editText"
+                            android:id="@+id/editText_to"
                             android:layout_gravity="top"/>
                     <ListView
                             android:layout_width="fill_parent"
                             android:layout_height="150dp"
-                            android:id="@+id/tab2_listView"/>
+                            android:id="@+id/listView_to"/>
+                    <fragment
+                            android:name="com.google.android.gms.maps.SupportMapFragment"
+                            android:id="@+id/map_to"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"/>
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>
     </TabHost>
+    <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:enabled="false"
+            android:text="@string/find_route"
+            android:id="@+id/button_route"/>
 
 </RelativeLayout>

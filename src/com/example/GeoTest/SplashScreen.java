@@ -1,10 +1,16 @@
 package com.example.GeoTest;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
-public class SplashScreen extends Activity {
+public class SplashScreen extends FragmentActivity {
     /**
      * Called when the activity is first created.
      */
@@ -15,22 +21,31 @@ public class SplashScreen extends Activity {
 
         new Thread() {
             public void run() {
-                prepare();
-                onReady();
+                if (isReady()) {
+                    go();
+                }
             }
         }.start();
     }
 
-    private void onReady() {
+    private void go() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
-    private void prepare() {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    private boolean isReady() {
+        if (servicesConnected()) {
+            return true;
         }
+        return false;
+    }
+
+    private boolean servicesConnected() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (ConnectionResult.SUCCESS == resultCode) {
+            Log.d("Location Updates", "Google Play services is available.");
+            return true;
+        }
+        return false;
     }
 }
