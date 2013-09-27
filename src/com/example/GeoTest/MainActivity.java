@@ -3,6 +3,7 @@ package com.example.GeoTest;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
@@ -17,6 +18,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,6 +45,19 @@ public class MainActivity extends FragmentActivity {
 
         inputMethodManager = (InputMethodManager)getSystemService(this.INPUT_METHOD_SERVICE);
 
+        initTabs();
+        initListeners();
+
+        geocoder = new Geocoder(this);
+
+        mapFrom = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map_from)).getMap();
+        mapFrom.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+        mapTo = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map_from)).getMap();
+        mapTo.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+    }
+
+    private  void initTabs() {
         tabHost = (TabHost) findViewById(R.id.tabHost);
         tabHost.setup();
 
@@ -57,6 +72,9 @@ public class MainActivity extends FragmentActivity {
         tabSpec.setIndicator(getResources().getString(R.string.to));
         tabSpec.setContent(R.id.tab_to);
         tabHost.addTab(tabSpec);
+    }
+
+    private  void initListeners(){
 
         View.OnKeyListener onKeyListener = new View.OnKeyListener() {
             @Override
@@ -85,14 +103,6 @@ public class MainActivity extends FragmentActivity {
         listViewFrom = (ListView)findViewById(R.id.listView_from);
         listViewFrom.setOnItemClickListener(onItemClickListener);
 
-        geocoder = new Geocoder(this);
-
-        mapFrom = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map_from)).getMap();
-        mapFrom.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
-        mapTo = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map_from)).getMap();
-        mapTo.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
         route_button = (Button)findViewById(R.id.button_route);
         route_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,33 +113,25 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void decodeAddress(String initialString) {
-        if (geocoder != null) {
-            try {
-                decodedAddresses = geocoder.getFromLocationName(initialString, 7);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        String[] stringAddresses = new String[decodedAddresses.size()];
-        Address adr;
-        if (decodedAddresses != null) {
-            for(int i = 0; i < decodedAddresses.size(); i++) {
-                adr = decodedAddresses.get(i);
-                stringAddresses[i] = "";
-                for (int j = 0; j < adr.getMaxAddressLineIndex(); j++) {
-                    if (adr.getAddressLine(j) != null) {
-                        stringAddresses[i] = stringAddresses[i] + adr.getAddressLine(j) + " ";
-                    }
-                }
-            }
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, stringAddresses);
-        if (tabHost.getCurrentTab() == 0) {
-            listViewFrom.setAdapter(adapter);
-        } else {
-            listViewTo.setAdapter(adapter);
+        AddressDecoder addressDecoder = new AddressDecoder();
+        addressDecoder.execute(initialString);
+        String[] stringAddresses = null;
+        try {
+            stringAddresses = addressDecoder.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
 
+        if (stringAddresses != null) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, stringAddresses);
+            if (tabHost.getCurrentTab() == 0) {
+                listViewFrom.setAdapter(adapter);
+            } else {
+                listViewTo.setAdapter(adapter);
+            }
+        }
     }
 
     private void goToAddressFromListByIndex(int index) {
@@ -142,7 +144,6 @@ public class MainActivity extends FragmentActivity {
                 } else {
                     pointTo = target;
                 }
-
                 if ((pointFrom != null)&&(pointTo != null)) {
                     if (route_button != null){
                         route_button.setEnabled(true);
@@ -172,5 +173,36 @@ public class MainActivity extends FragmentActivity {
         intent.putExtra("to_lat", pointTo.latitude);
         intent.putExtra("to_lon", pointTo.longitude);
         startActivity(intent);
+    }
+
+    private class AddressDecoder extends AsyncTask<String, Void, String[]> {
+
+        @Override
+        protected String[] doInBackground(String... params) {
+            String initialString = params[0];
+            if (geocoder != null) {
+                try {
+                    decodedAddresses = geocoder.getFromLocationName(initialString, 7);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            String[] stringAddresses = null;
+            if (decodedAddresses != null) {
+                stringAddresses = new String[decodedAddresses.size()];
+                Address adr;
+
+                for(int i = 0; i < decodedAddresses.size(); i++) {
+                    adr = decodedAddresses.get(i);
+                    stringAddresses[i] = "";
+                    for (int j = 0; j < adr.getMaxAddressLineIndex(); j++) {
+                        if (adr.getAddressLine(j) != null) {
+                            stringAddresses[i] = stringAddresses[i] + adr.getAddressLine(j) + " ";
+                        }
+                    }
+                }
+            }
+            return stringAddresses;
+        }
     }
 }

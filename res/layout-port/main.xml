@@ -21,7 +21,8 @@
             <FrameLayout
                     android:id="@android:id/tabcontent"
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
+                    android:layout_height="fill_parent"
+                    android:layout_marginBottom="50dp">
                 <LinearLayout
                         android:id="@+id/tab_from"
                         android:layout_width="fill_parent"
@@ -29,7 +30,6 @@
                     <EditText
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/from"
                             android:id="@+id/editText_from"
                             android:layout_gravity="top"
                             android:maxLines="1"/>
@@ -50,7 +50,6 @@
                     <EditText
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/to"
                             android:id="@+id/editText_to"
                             android:layout_gravity="top"/>
                     <ListView
