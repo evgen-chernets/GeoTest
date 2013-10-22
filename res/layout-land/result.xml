@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+    <fragment android:name="com.google.android.gms.maps.SupportMapFragment"
+              android:id="@+id/map_result"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"/>
+    <TextView android:id="@+id/result_text"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_horizontal"
+              android:background="#01000000"
+              android:visibility="invisible"/>
+    <ProgressBar
+            android:id="@+id/result_progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="invisible"/>
+</FrameLayout>
