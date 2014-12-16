@@ -21,31 +21,35 @@ public class SplashScreen extends FragmentActivity {
 
         new Thread() {
             public void run() {
-                if (isReady()) {
-                    go();
+                if (servicesConnected()) {
+                    Intent intent = new Intent(SplashScreen.this, MainActivity.class);
+                    startActivity(intent);
                 }
             }
         }.start();
     }
 
-    private void go() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
-
-    private boolean isReady() {
-        if (servicesConnected()) {
-            return true;
-        }
-        return false;
-    }
-
     private boolean servicesConnected() {
+        boolean result = false;
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (ConnectionResult.SUCCESS == resultCode) {
-            Log.d("Location Updates", "Google Play services is available.");
-            return true;
+        switch (resultCode) {
+            case ConnectionResult.SUCCESS:
+                Log.d("GeoTest", "ConnectionResult.SUCCESS");
+                result = true;
+                break;
+            case ConnectionResult.SERVICE_DISABLED:
+                Log.d("GeoTest", "ConnectionResult.SERVICE_DISABLED");
+                break;
+            case ConnectionResult.SERVICE_INVALID:
+                Log.d("GeoTest", "ConnectionResult.SERVICE_INVALID");
+                break;
+            case ConnectionResult.SERVICE_MISSING:
+                Log.d("GeoTest", "ConnectionResult.SERVICE_MISSING");
+                break;
+            case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
+                Log.d("GeoTest", "ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED");
+                break;
         }
-        return false;
+        return result;
     }
 }
