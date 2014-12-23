@@ -31,15 +31,11 @@
         <activity android:name="ResultActivity"/>
 
         <meta-data android:name="com.google.android.maps.v2.API_KEY"
-                   android:value="AIzaSyAqEI6OYhWqIE4dxU7GRppTKQoaPBqrRTU"/>
+                   android:value="AIzaSyCMzckCR7RZxbFOKieHDy652NW1FkjNHTA"/>
 
         <meta-data
                 android:name="com.google.android.gms.version"
                 android:value="@integer/google_play_services_version" />
-
-
-        <meta-data android:name="com.google.android.gms.version"
-                   android:value="@integer/google_play_services_version" />
 
     </application>
 </manifest>
